@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.core.db import init_db
-from app.routers import health, seed, transactions
+from app.routers.health import router as health_router
+from app.routers.seed import router as seed_router
+from app.routers.transactions import router as transactions_router
 
 app = FastAPI(title="Smart Expense Tracker API")
 
@@ -18,6 +20,6 @@ app.add_middleware(
 async def on_startup():
     await init_db()
 
-app.include_router(health.router)
-app.include_router(seed.router)
-app.include_router(transactions.router)
+app.include_router(health_router)
+app.include_router(seed_router)
+app.include_router(transactions_router)
