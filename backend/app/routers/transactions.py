@@ -16,6 +16,9 @@ class TxIn(BaseModel):
     predicted_proba: Optional[float] = None
     source: Optional[str] = "manual"
 
+class TxBulkIn(BaseModel):
+    items: list[TxIn]
+
 class TxUpdate(BaseModel):
     date: Optional[date] = None
     description: Optional[str] = None
@@ -95,3 +98,9 @@ async def delete_transaction(tx_id: str):
         raise HTTPException(status_code=404, detail="Transaction not found")
     await doc.delete()
     return {"deleted": True}
+
+@router.post("/bulk")
+async def create_transactions_bulk(payload: TxBulkIn):
+    docs = [Transaction(**it.model_dump()) for it in payload.items]
+    res = await Transaction.insert_many(docs)
+    return {"inserted": len(res.inserted_ids), "ids": [str(i) for i in res.inserted_ids]}
