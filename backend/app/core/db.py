@@ -8,3 +8,14 @@ async def init_db():
     client = AsyncIOMotorClient(settings.MONGO_URI)
     db = client[settings.MONGO_DB]
     await init_beanie(database=db, document_models=[Category, Transaction])
+
+    try:
+        await db["transactions"].create_index([("date", 1)])
+        await db["transactions"].create_index([("created_at", -1)])
+        await db["transactions"].create_index([("category_id", 1)])
+        await db["transactions"].create_index(
+            [("description", "text"), ("merchant", "text")],
+            name="text_desc_merchant"
+        )
+    except Exception:
+        pass

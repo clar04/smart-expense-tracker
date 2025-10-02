@@ -5,6 +5,7 @@ from app.core.db import init_db
 from app.routers.health import router as health_router
 from app.routers.seed import router as seed_router
 from app.routers.transactions import router as transactions_router
+from app.routers.categories import router as categories_router
 
 app = FastAPI(title="Smart Expense Tracker API")
 
@@ -23,3 +24,4 @@ async def on_startup():
 app.include_router(health_router)
 app.include_router(seed_router)
 app.include_router(transactions_router)
+app.include_router(categories_router)
